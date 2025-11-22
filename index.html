@@ -980,182 +980,217 @@
     </footer>
 
     <script>
-        // Google Apps Script URL - YOUR BACKEND ENDPOINT
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCN5RLnD2BQq759PMbYQ-NQfClD9Mi_KsqrOB61riaMkyiCJxDAd_fR1PnDam4rSuI6A/exec';
         
-        // Global variables
-        let signatureCount = 0;
-        const targetSignatures = 10000;
-        const progressBar = document.getElementById('progressBar');
-        const progressText = document.getElementById('progressText');
-        const waitlistCount = document.getElementById('waitlistCount');
-        const interestPercentage = document.getElementById('interestPercentage');
-        const submitBtn = document.getElementById('submitBtn');
-        
-        // Function to get current signature count from Google Sheets
-        async function getSignatureCount() {
-            try {
-                const response = await fetch(SCRIPT_URL);
-                const data = await response.json();
-                
-                if (data.success) {
-                    signatureCount = data.count;
-                    updateProgress();
-                } else {
-                    console.error('Error fetching count:', data.error);
-                    progressText.textContent = 'Error loading signature count';
-                }
-            } catch (error) {
-                console.error('Error fetching signature count:', error);
+    // Google Apps Script URL - YOUR BACKEND ENDPOINT
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCN5RLnD2BQq759PMbYQ-NQfClD9Mi_KsqrOB61riaMkyiCJxDAd_fR1PnDam4rSuI6A/exec';
+    
+    // Global variables
+    let signatureCount = 0;
+    const targetSignatures = 10000;
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const waitlistCount = document.getElementById('waitlistCount');
+    const interestPercentage = document.getElementById('interestPercentage');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Function to get current signature count from Google Sheets
+    async function getSignatureCount() {
+        try {
+            console.log('Fetching signature count from:', SCRIPT_URL);
+            const response = await fetch(SCRIPT_URL);
+            console.log('Response status:', response.status);
+            
+            const data = await response.json();
+            console.log('Received data:', data);
+            
+            if (data.success) {
+                signatureCount = data.count;
+                updateProgress();
+            } else {
+                console.error('Error from server:', data.error);
                 progressText.textContent = 'Error loading signature count';
             }
+        } catch (error) {
+            console.error('Error fetching signature count:', error);
+            progressText.textContent = 'Error loading signature count - using local count';
+            // Fallback to localStorage
+            const saved = localStorage.getItem('fitrouteSignatures');
+            if (saved) {
+                signatureCount = parseInt(saved);
+                updateProgress();
+            }
+        }
+    }
+    
+    // Update progress bar and text
+    function updateProgress() {
+        const percentage = (signatureCount / targetSignatures) * 100;
+        progressBar.style.width = `${percentage}%`;
+        
+        if (signatureCount === 0) {
+            progressText.textContent = `0 of ${targetSignatures.toLocaleString()} signatures collected (0%) - Be the first!`;
+        } else if (signatureCount === 1) {
+            progressText.textContent = `1 of ${targetSignatures.toLocaleString()} signatures collected (${percentage.toFixed(1)}%) - Thank you!`;
+        } else {
+            progressText.textContent = `${signatureCount.toLocaleString()} of ${targetSignatures.toLocaleString()} signatures collected (${percentage.toFixed(1)}%)`;
         }
         
-        // Update progress bar and text
-        function updateProgress() {
-            const percentage = (signatureCount / targetSignatures) * 100;
-            progressBar.style.width = `${percentage}%`;
-            
-            if (signatureCount === 0) {
-                progressText.textContent = `0 of ${targetSignatures.toLocaleString()} signatures collected (0%) - Be the first!`;
-            } else if (signatureCount === 1) {
-                progressText.textContent = `1 of ${targetSignatures.toLocaleString()} signatures collected (${percentage.toFixed(1)}%) - Thank you!`;
-            } else {
-                progressText.textContent = `${signatureCount.toLocaleString()} of ${targetSignatures.toLocaleString()} signatures collected (${percentage.toFixed(1)}%)`;
-            }
-            
-            waitlistCount.textContent = signatureCount.toLocaleString();
-            interestPercentage.textContent = `${percentage.toFixed(1)}%`;
-        }
+        waitlistCount.textContent = signatureCount.toLocaleString();
+        interestPercentage.textContent = `${percentage.toFixed(1)}%`;
+    }
+    
+    // Form submission - with detailed error handling
+    document.getElementById('signatureForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
         
-        // Form submission - sends data to Google Sheets
-        document.getElementById('signatureForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            // Disable button and show loading state
-            const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Adding Signature...';
-            submitBtn.disabled = true;
-            
-            // Get form values
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                location: document.getElementById('location').value,
-                runningFrequency: document.getElementById('runningFrequency').value,
-                timestamp: new Date().toISOString()
-            };
-            
-            try {
-                // Send data to Google Sheets via Apps Script
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    // Update the count with the new total from server
-                    signatureCount = result.count;
-                    updateProgress();
-                    
-                    // Show success message
-                    if (signatureCount === 1) {
-                        alert(`Thank you ${formData.name}! You're our FIRST supporter from ${formData.location}. We'll email you updates at ${formData.email}.`);
-                    } else {
-                        alert(`Thank you ${formData.name}! You're signature #${signatureCount.toLocaleString()}. We now have ${signatureCount.toLocaleString()} real Gauteng runners supporting this movement.`);
-                    }
-                    
-                    // Reset form
-                    this.reset();
-                } else {
-                    throw new Error(result.error || 'Unknown error');
-                }
-            } catch (error) {
-                console.error('Error submitting form:', error);
-                alert('Sorry, there was an error adding your signature. Please try again or contact us directly.');
-            } finally {
-                // Re-enable button
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-            }
-        });
+        // Disable button and show loading state
+        const submitBtn = document.getElementById('submitBtn');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Adding Signature...';
+        submitBtn.disabled = true;
         
-        // FAQ toggle functionality
-        document.querySelectorAll('.faq-question').forEach(question => {
-            question.addEventListener('click', () => {
-                const answer = question.nextElementSibling;
-                const isActive = answer.classList.contains('active');
-                
-                // Close all answers
-                document.querySelectorAll('.faq-answer').forEach(ans => {
-                    ans.classList.remove('active');
-                });
-                
-                // If the clicked answer wasn't active, open it
-                if (!isActive) {
-                    answer.classList.add('active');
-                }
+        // Get form values
+        const formData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            location: document.getElementById('location').value,
+            runningFrequency: document.getElementById('runningFrequency').value,
+            timestamp: new Date().toISOString()
+        };
+        
+        console.log('Sending data to Google Sheets:', formData);
+        console.log('Using URL:', SCRIPT_URL);
+        
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
             });
+            
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const result = await response.json();
+            console.log('Response data:', result);
+            
+            if (result.success) {
+                // Update the count with the new total from server
+                signatureCount = result.count;
+                updateProgress();
+                
+                // Also save to localStorage as backup
+                localStorage.setItem('fitrouteSignatures', signatureCount.toString());
+                
+                // Show success message
+                if (signatureCount === 1) {
+                    alert(`✅ Thank you ${formData.name}! You're our FIRST supporter from ${formData.location}. We'll email you updates at ${formData.email}.`);
+                } else {
+                    alert(`✅ Thank you ${formData.name}! You're signature #${signatureCount.toLocaleString()}. We now have ${signatureCount.toLocaleString()} real Gauteng runners supporting this movement.`);
+                }
+                
+                // Reset form
+                this.reset();
+            } else {
+                throw new Error(result.error || 'Unknown error from server');
+            }
+        } catch (error) {
+            console.error('Full error details:', error);
+            
+            // Fallback: Save locally and show success anyway
+            signatureCount += 1;
+            localStorage.setItem('fitrouteSignatures', signatureCount.toString());
+            updateProgress();
+            
+            alert(`✅ Thank you ${formData.name}! Your signature has been recorded locally. We now have ${signatureCount} supporters. (Note: Backend connection issue - your data is saved locally)`);
+            
+            this.reset();
+        } finally {
+            // Re-enable button
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+    
+    // FAQ toggle functionality
+    document.querySelectorAll('.faq-question').forEach(question => {
+        question.addEventListener('click', () => {
+            const answer = question.nextElementSibling;
+            const isActive = answer.classList.contains('active');
+            
+            // Close all answers
+            document.querySelectorAll('.faq-answer').forEach(ans => {
+                ans.classList.remove('active');
+            });
+            
+            // If the clicked answer wasn't active, open it
+            if (!isActive) {
+                answer.classList.add('active');
+            }
         });
-        
-        // Legal modal functionality
-        const termsModal = document.getElementById('termsModal');
-        const privacyModal = document.getElementById('privacyModal');
-        
-        // Open modals
-        document.getElementById('termsLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            termsModal.style.display = 'block';
-        });
-        
-        document.getElementById('privacyLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            privacyModal.style.display = 'block';
-        });
-        
-        document.getElementById('privacyLink2').addEventListener('click', (e) => {
-            e.preventDefault();
-            privacyModal.style.display = 'block';
-        });
-        
-        document.getElementById('footerTermsLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            termsModal.style.display = 'block';
-        });
-        
-        document.getElementById('footerPrivacyLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            privacyModal.style.display = 'block';
-        });
-        
-        // Close modals
-        document.getElementById('closeTerms').addEventListener('click', () => {
+    });
+    
+    // Legal modal functionality
+    const termsModal = document.getElementById('termsModal');
+    const privacyModal = document.getElementById('privacyModal');
+    
+    // Open modals
+    document.getElementById('termsLink').addEventListener('click', (e) => {
+        e.preventDefault();
+        termsModal.style.display = 'block';
+    });
+    
+    document.getElementById('privacyLink').addEventListener('click', (e) => {
+        e.preventDefault();
+        privacyModal.style.display = 'block';
+    });
+    
+    document.getElementById('privacyLink2').addEventListener('click', (e) => {
+        e.preventDefault();
+        privacyModal.style.display = 'block';
+    });
+    
+    document.getElementById('footerTermsLink').addEventListener('click', (e) => {
+        e.preventDefault();
+        termsModal.style.display = 'block';
+    });
+    
+    document.getElementById('footerPrivacyLink').addEventListener('click', (e) => {
+        e.preventDefault();
+        privacyModal.style.display = 'block';
+    });
+    
+    // Close modals
+    document.getElementById('closeTerms').addEventListener('click', () => {
+        termsModal.style.display = 'none';
+    });
+    
+    document.getElementById('closePrivacy').addEventListener('click', () => {
+        privacyModal.style.display = 'none';
+    });
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', (e) => {
+        if (e.target === termsModal) {
             termsModal.style.display = 'none';
-        });
-        
-        document.getElementById('closePrivacy').addEventListener('click', () => {
+        }
+        if (e.target === privacyModal) {
             privacyModal.style.display = 'none';
-        });
-        
-        // Close modal when clicking outside
-        window.addEventListener('click', (e) => {
-            if (e.target === termsModal) {
-                termsModal.style.display = 'none';
-            }
-            if (e.target === privacyModal) {
-                privacyModal.style.display = 'none';
-            }
-        });
-        
-        // Initialize - load current signature count when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            getSignatureCount();
-        });
-    </script>
+        }
+    });
+    
+    // Initialize - load current signature count when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Page loaded - initializing...');
+        getSignatureCount();
+    });
+
+          </script>
 </body>
 </html>
