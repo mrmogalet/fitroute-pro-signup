@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitRoute Pro - Better Running Routes for Runners</title>
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --primary-dark: #3a5984;
+            --secondary: #ff6b6b;
+            --accent: #51cf66;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+            --text: #333333;
+            --text-light: #6c757d;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: #f5f7fa;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            margin-right: 10px;
+            font-size: 2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        nav ul li a:hover {
+            color: var(--accent);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 5rem 0;
+            background: linear-gradient(rgba(74, 111, 165, 0.9), rgba(58, 89, 132, 0.9)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%234a6fa5"/><path d="M0 50 L100 50 M50 0 L50 100" stroke="white" stroke-width="1" stroke-opacity="0.1"/></svg>');
+            background-size: cover;
+            color: white;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            opacity: 0.9;
+        }
+
+        .highlight {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .hrc-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            margin: 1rem 0;
+            font-size: 1.1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 0;
+            background-color: white;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .section-title p {
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--light);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        /* Counter Section */
+        .counter {
+            padding: 5rem 0;
+            background-color: var(--light);
+            text-align: center;
+        }
+
+        .counter-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .counter h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+
+        .counter-stats {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 3rem;
+            margin: 3rem 0;
+        }
+
+        .stat {
+            text-align: center;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .progress-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #2b8a3e);
+            width: 0%;
+            transition: width 1s ease-in-out;
+            border-radius: 10px;
+        }
+
+        .progress-text {
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        /* Signup Section */
+        .signup {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .signup-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .signup-content {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .signup-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .signup-content p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .benefits-list {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .benefits-list li {
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .benefits-list li::before {
+            content: "✓";
+            color: var(--accent);
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .signup-form {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            color: var(--dark);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.2);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .checkbox-group input {
+            margin-right: 10px;
+            margin-top: 5px;
+        }
+
+        .checkbox-group label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-accent {
+            background: var(--accent);
+        }
+
+        .btn-accent:hover {
+            background: #47b85d;
+        }
+
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* FAQ Section */
+        .faq {
+            padding: 5rem 0;
+            background-color: white;
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            margin-bottom: 1.5rem;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            background: var(--light);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-answer.active {
+            padding: 1.5rem;
+            max-height: 500px;
+        }
+
+        /* Legal Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .legal-content h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .legal-content h3 {
+            margin: 1.5rem 0 1rem;
+            color: var(--dark);
+        }
+
+        .legal-content p {
+            margin-bottom: 1rem;
+        }
+
+        .legal-content ul {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+        }
+
+        .legal-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .legal-links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .legal-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0 1.5rem;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-column ul li a {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            color: white;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #adb5bd;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav ul {
+                margin-top: 1rem;
+                justify-content: center;
+            }
+
+            nav ul li {
+                margin: 0 0.5rem;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .signup-container {
+                flex-direction: column;
+            }
+
+            .counter-stats {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            
+            .legal-links {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🏃‍♂️</span>
+                    <span>FitRoute Pro</span>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#counter">Progress</a></li>
+                        <li><a href="#signup">Join Movement</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hrc-badge">Proudly supporting Gauteng running communities</div>
+            <h1>Better Running Routes for <span class="highlight">Gauteng Runners</span></h1>
+            <p>AI-powered route planning, personalized training, and community features designed specifically for Gauteng's unique running landscape.</p>
+            <a href="#signup" class="btn btn-accent">Join The Movement - Add Your Signature</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Why Gauteng Runners Need FitRoute Pro</h2>
+                <p>Built with input from local running communities to solve real running challenges</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🗺️</div>
+                    <h3>Gauteng-Specific Routes</h3>
+                    <p>Routes designed for Gauteng's unique topography, weather, and safety considerations.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3>Community Powered</h3>
+                    <p>Discover routes created by other Gauteng runners and share your favorites.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Performance Analytics</h3>
+                    <p>Track your progress with detailed insights on pace, elevation, and performance.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Personalized Training</h3>
+                    <p>Get custom training plans tailored to Gauteng's race calendar and conditions.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏆</div>
+                    <h3>Local Challenges</h3>
+                    <p>Compete with local runners, join community challenges on familiar routes.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Safety First</h3>
+                    <p>Safety-rated routes, well-lit options, and live location sharing for peace of mind.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Counter Section -->
+    <section class="counter" id="counter">
+        <div class="container">
+            <div class="counter-content">
+                <h2>Join the Gauteng Running Revolution</h2>
+                <p>We need <strong>10,000 signatures</strong> from Gauteng runners to prioritize development for our region. Show your support!</p>
+                
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="progress-text" id="progressText">Loading signature count...</div>
+                
+                <div class="counter-stats">
+                    <div class="stat">
+                        <div class="stat-number" id="signaturesRequired">10,000</div>
+                        <div class="stat-label">Signatures Goal</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number" id="waitlistCount">0</div>
+                        <div class="stat-label">Current Signatures</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number" id="interestPercentage">0%</div>
+                        <div class="stat-label">Progress to Goal</div>
+                    </div>
+                </div>
+                
+                <p>Every signature brings us closer to building the ultimate running platform for Gauteng.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Signup Section -->
+    <section class="signup" id="signup">
+        <div class="container">
+            <div class="signup-container">
+                <div class="signup-content">
+                    <h2>Add Your Signature to the Movement</h2>
+                    <p>Join thousands of Gauteng runners calling for better route planning technology designed for our unique needs.</p>
+                    
+                    <ul class="benefits-list">
+                        <li><strong>Priority Access:</strong> Be first to try all features when we launch in Gauteng</li>
+                        <li><strong>Shape Development:</strong> Your feedback directly influences what we build</li>
+                        <li><strong>Exclusive Pricing:</strong> Special lifetime discount for movement supporters</li>
+                        <li><strong>Community Impact:</strong> Help build a better running ecosystem for everyone</li>
+                    </ul>
+                    
+                    <p><strong>We need 10,000 signatures</strong> to fast-track Gauteng development - add yours today!</p>
+                </div>
+                
+                <div class="signup-form">
+                    <h3 style="margin-bottom: 1.5rem; color: var(--dark);">Join The Movement</h3>
+                    <form id="signatureForm">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="location">Where in Gauteng do you run?</label>
+                            <select id="location" class="form-control" required>
+                                <option value="">Select your area</option>
+                                <option value="johannesburg">Johannesburg</option>
+                                <option value="pretoria">Pretoria</option>
+                                <option value="sandton">Sandton</option>
+                                <option value="midrand">Midrand</option>
+                                <option value="centurion">Centurion</option>
+                                <option value="kempton-park">Kempton Park</option>
+                                <option value="other">Other Gauteng Area</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="runningFrequency">How often do you run?</label>
+                            <select id="runningFrequency" class="form-control" required>
+                                <option value="">Select an option</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">3-5 times per week</option>
+                                <option value="weekly2">1-2 times per week</option>
+                                <option value="occasional">Occasionally</option>
+                            </select>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="updates" required>
+                            <label for="updates">I want to receive updates about FitRoute Pro development and early access opportunities</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="agreeTerms" required>
+                            <label for="agreeTerms">I agree to the <a href="#" id="termsLink">Terms of Service</a> and <a href="#" id="privacyLink">Privacy Policy</a></label>
+                        </div>
+                        <button type="submit" class="btn" id="submitBtn">Add My Signature</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <div class="section-title">
+                <h2>Frequently Asked Questions</h2>
+                <p>Everything you need to know about the FitRoute Pro movement</p>
+            </div>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What happens when we reach 10,000 signatures?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>When we reach our goal of 10,000 signatures from Gauteng runners, we will immediately begin development of Gauteng-specific features and prioritize the region for our beta launch. All signatories will receive early access.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How much will FitRoute Pro cost?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>There will be a free version with basic features and a premium subscription (approximately R99/month) with advanced analytics, personalized training plans, and exclusive features. Movement supporters will receive special lifetime pricing.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Is my data secure?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, we take data privacy seriously. We comply with POPIA regulations and will never sell your personal data. Your running routes and activity data belong to you. Read our detailed <a href="#" id="privacyLink2">Privacy Policy</a> for more information.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What makes this different from other running apps?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>FitRoute Pro focuses specifically on route discovery and creation with AI technology, community-driven content, and features designed for the South African running environment. We integrate with popular platforms but offer unique tools for route planning and local community engagement.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Legal Modals -->
+    <div id="termsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeTerms">&times;</span>
+            <div class="legal-content">
+                <h2>FitRoute Pro Terms of Service</h2>
+                <p><strong>Last Updated: January 2024</strong></p>
+                
+                <h3>1. Acceptance of Terms</h3>
+                <p>By accessing or using FitRoute Pro ("the Service"), you agree to be bound by these Terms of Service and our Privacy Policy. If you disagree with any part of the terms, you may not access the Service.</p>
+                
+                <h3>2. Description of Service</h3>
+                <p>FitRoute Pro provides route planning, fitness tracking, and community features for runners. We reserve the right to modify or discontinue the Service at any time.</p>
+                
+                <h3>3. User Accounts</h3>
+                <p>When you create an account with us, you must provide accurate information. You are responsible for safeguarding your password and for all activities that occur under your account.</p>
+                
+                <h3>4. User Content</h3>
+                <p>You retain ownership of any content you create using our Service (routes, activities, etc.). By submitting content, you grant us a worldwide license to use, display, and distribute that content in connection with the Service.</p>
+                
+                <h3>5. Acceptable Use</h3>
+                <p>You agree not to:</p>
+                <ul>
+                    <li>Use the Service for any illegal purpose</li>
+                    <li>Upload harmful code or attempt to gain unauthorized access</li>
+                    <li>Harass other users or post inappropriate content</li>
+                    <li>Impersonate any person or entity</li>
+                </ul>
+                
+                <h3>6. Safety Disclaimer</h3>
+                <p>Running involves inherent risks. You are solely responsible for your safety while using routes suggested by our Service. Always follow local laws, be aware of your surroundings, and use appropriate safety gear.</p>
+                
+                <h3>7. Termination</h3>
+                <p>We may terminate or suspend your account immediately for any violation of these Terms.</p>
+                
+                <h3>8. Changes to Terms</h3>
+                <p>We reserve the right to modify these terms at any time. We will provide notice of significant changes.</p>
+                
+                <h3>9. Governing Law</h3>
+                <p>These Terms shall be governed by the laws of South Africa, without regard to its conflict of law provisions.</p>
+                
+                <h3>10. Contact Us</h3>
+                <p>If you have any questions about these Terms, please contact us at legal@fitroutepro.co.za</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="privacyModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closePrivacy">&times;</span>
+            <div class="legal-content">
+                <h2>FitRoute Pro Privacy Policy</h2>
+                <p><strong>Last Updated: January 2024</strong></p>
+                
+                <h3>1. Information We Collect</h3>
+                <p>We collect information you provide directly to us, including:</p>
+                <ul>
+                    <li>Account information (name, email, location)</li>
+                    <li>Running activity data (routes, times, distances)</li>
+                    <li>Profile information and preferences</li>
+                    <li>Communications with us</li>
+                </ul>
+                
+                <h3>2. How We Use Your Information</h3>
+                <p>We use the information we collect to:</p>
+                <ul>
+                    <li>Provide, maintain, and improve our services</li>
+                    <li>Personalize your experience</li>
+                    <li>Communicate with you about products and updates</li>
+                    <li>Ensure safety and security of our platform</li>
+                </ul>
+                
+                <h3>3. Information Sharing</h3>
+                <p>We do not sell your personal data. We may share information:</p>
+                <ul>
+                    <li>With your consent</li>
+                    <li>With service providers who assist our operations</li>
+                    <li>To comply with legal obligations</li>
+                    <li>To protect rights and safety</li>
+                </ul>
+                
+                <h3>4. Data Security</h3>
+                <p>We implement appropriate security measures to protect your personal information. However, no method of transmission over the Internet is 100% secure.</p>
+                
+                <h3>5. Your Rights (POPIA Compliance)</h3>
+                <p>Under South Africa's Protection of Personal Information Act (POPIA), you have the right to:</p>
+                <ul>
+                    <li>Access your personal information</li>
+                    <li>Correct inaccurate information</li>
+                    <li>Request deletion of your information</li>
+                    <li>Object to processing of your information</li>
+                </ul>
+                
+                <h3>6. Data Retention</h3>
+                <p>We retain your information for as long as your account is active or as needed to provide services. You can request account deletion at any time.</p>
+                
+                <h3>7. Children's Privacy</h3>
+                <p>Our Service is not directed to individuals under 16. We do not knowingly collect personal information from children under 16.</p>
+                
+                <h3>8. Changes to This Policy</h3>
+                <p>We may update this privacy policy. We will notify you of any changes by posting the new policy on this page.</p>
+                
+                <h3>9. Contact Us</h3>
+                <p>If you have any questions about this Privacy Policy, please contact us at privacy@fitroutepro.co.za</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>FitRoute Pro</h3>
+                    <p>Building the future of running in South Africa, starting with Gauteng.</p>
+                    <div class="social-links">
+                        <a href="#">FB</a>
+                        <a href="#">IG</a>
+                        <a href="#">TW</a>
+                        <a href="#">LI</a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#counter">Progress</a></li>
+                        <li><a href="#signup">Join Movement</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#" id="footerTermsLink">Terms of Service</a></li>
+                        <li><a href="#" id="footerPrivacyLink">Privacy Policy</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li>Email: fitroutepro@gmail.com</li>
+                        <li>Phone: +27 66 204 5140</li>
+                        <li>Johannesburg, Gauteng</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 FitRoute Pro. All rights reserved. | POPIA Compliant</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Google Apps Script URL - YOUR BACKEND ENDPOINT
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCN5RLnD2BQq759PMbYQ-NQfClD9Mi_KsqrOB61riaMkyiCJxDAd_fR1PnDam4rSuI6A/exec';
+        
+        // Global variables
+        let signatureCount = 0;
+        const targetSignatures = 10000;
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const waitlistCount = document.getElementById('waitlistCount');
+        const interestPercentage = document.getElementById('interestPercentage');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        // Function to get current signature count from Google Sheets
+        async function getSignatureCount() {
+            try {
+                const response = await fetch(SCRIPT_URL);
+                const data = await response.json();
+                
+                if (data.success) {
+                    signatureCount = data.count;
+                    updateProgress();
+                } else {
+                    console.error('Error fetching count:', data.error);
+                    progressText.textContent = 'Error loading signature count';
+                }
+            } catch (error) {
+                console.error('Error fetching signature count:', error);
+                progressText.textContent = 'Error loading signature count';
+            }
+        }
+        
+        // Update progress bar and text
+        function updateProgress() {
+            const percentage = (signatureCount / targetSignatures) * 100;
+            progressBar.style.width = `${percentage}%`;
+            
+            if (signatureCount === 0) {
+                progressText.textContent = `0 of ${targetSignatures.toLocaleString()} signatures collected (0%) - Be the first!`;
+            } else if (signatureCount === 1) {
+                progressText.textContent = `1 of ${targetSignatures.toLocaleString()} signatures collected (${percentage.toFixed(1)}%) - Thank you!`;
+            } else {
+                progressText.textContent = `${signatureCount.toLocaleString()} of ${targetSignatures.toLocaleString()} signatures collected (${percentage.toFixed(1)}%)`;
+            }
+            
+            waitlistCount.textContent = signatureCount.toLocaleString();
+            interestPercentage.textContent = `${percentage.toFixed(1)}%`;
+        }
+        
+        // Form submission - sends data to Google Sheets
+        document.getElementById('signatureForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Disable button and show loading state
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Adding Signature...';
+            submitBtn.disabled = true;
+            
+            // Get form values
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                location: document.getElementById('location').value,
+                runningFrequency: document.getElementById('runningFrequency').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            try {
+                // Send data to Google Sheets via Apps Script
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Update the count with the new total from server
+                    signatureCount = result.count;
+                    updateProgress();
+                    
+                    // Show success message
+                    if (signatureCount === 1) {
+                        alert(`Thank you ${formData.name}! You're our FIRST supporter from ${formData.location}. We'll email you updates at ${formData.email}.`);
+                    } else {
+                        alert(`Thank you ${formData.name}! You're signature #${signatureCount.toLocaleString()}. We now have ${signatureCount.toLocaleString()} real Gauteng runners supporting this movement.`);
+                    }
+                    
+                    // Reset form
+                    this.reset();
+                } else {
+                    throw new Error(result.error || 'Unknown error');
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                alert('Sorry, there was an error adding your signature. Please try again or contact us directly.');
+            } finally {
+                // Re-enable button
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // FAQ toggle functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const isActive = answer.classList.contains('active');
+                
+                // Close all answers
+                document.querySelectorAll('.faq-answer').forEach(ans => {
+                    ans.classList.remove('active');
+                });
+                
+                // If the clicked answer wasn't active, open it
+                if (!isActive) {
+                    answer.classList.add('active');
+                }
+            });
+        });
+        
+        // Legal modal functionality
+        const termsModal = document.getElementById('termsModal');
+        const privacyModal = document.getElementById('privacyModal');
+        
+        // Open modals
+        document.getElementById('termsLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            termsModal.style.display = 'block';
+        });
+        
+        document.getElementById('privacyLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            privacyModal.style.display = 'block';
+        });
+        
+        document.getElementById('privacyLink2').addEventListener('click', (e) => {
+            e.preventDefault();
+            privacyModal.style.display = 'block';
+        });
+        
+        document.getElementById('footerTermsLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            termsModal.style.display = 'block';
+        });
+        
+        document.getElementById('footerPrivacyLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            privacyModal.style.display = 'block';
+        });
+        
+        // Close modals
+        document.getElementById('closeTerms').addEventListener('click', () => {
+            termsModal.style.display = 'none';
+        });
+        
+        document.getElementById('closePrivacy').addEventListener('click', () => {
+            privacyModal.style.display = 'none';
+        });
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === termsModal) {
+                termsModal.style.display = 'none';
+            }
+            if (e.target === privacyModal) {
+                privacyModal.style.display = 'none';
+            }
+        });
+        
+        // Initialize - load current signature count when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            getSignatureCount();
+        });
+    </script>
+</body>
+</html>
